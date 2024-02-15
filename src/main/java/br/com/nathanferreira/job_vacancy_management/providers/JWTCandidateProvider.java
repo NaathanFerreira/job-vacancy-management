@@ -13,9 +13,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Service
-public class JWTProvider {
+public class JWTCandidateProvider {
 
-  @Value("${security.token.secret}")
+  @Value("${security.token.secret.candidate}")
   private String secretKey;
 
   public DecodedJWT validateToken(String token) {
@@ -36,9 +36,9 @@ public class JWTProvider {
     Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
     return JWT.create()
         .withIssuer("javacancy")
-        .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+        .withExpiresAt(Instant.now().plus(Duration.ofMinutes(10)))
         .withSubject(subject)
-        .withClaim("roles", Arrays.asList("COMPANY"))
+        .withClaim("roles", Arrays.asList("CANDIDATE"))
         .sign(algorithm);
   }
 

@@ -6,22 +6,19 @@ import java.time.Instant;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-
 import br.com.nathanferreira.job_vacancy_management.modules.company.dto.AuthCompanyDTO;
+import br.com.nathanferreira.job_vacancy_management.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.nathanferreira.job_vacancy_management.modules.company.repositories.CompanyRepository;
 import br.com.nathanferreira.job_vacancy_management.providers.JWTProvider;
 
 @Service
 public class AuthCompanyUseCase {
 
-  @Autowired 
+  @Autowired
   private JWTProvider jwtProvider;
 
   @Autowired
@@ -30,7 +27,7 @@ public class AuthCompanyUseCase {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  public String execute(AuthCompanyDTO credentials) throws AuthenticationException {
+  public AuthCompanyResponseDTO execute(AuthCompanyDTO credentials) throws AuthenticationException {
     var company = this.companyRepository.findByUsername(credentials.getUsername()).orElseThrow(() -> {
       throw new UsernameNotFoundException("Incorrect username/password");
     });
@@ -43,8 +40,14 @@ public class AuthCompanyUseCase {
 
     var token = this.jwtProvider.generateToken(company.getId().toString());
 
-    return token;
+    var expiresIn = Instant.now().plus(Duration.ofHours(2));
 
+    var authCompanyResponseDTO = AuthCompanyResponseDTO.builder()
+        .access_token(token)
+        .expires_in(expiresIn.toEpochMilli())
+        .build();
+
+    return authCompanyResponseDTO;
   }
 
 }
