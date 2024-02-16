@@ -16,6 +16,14 @@ import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.C
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ListAllJobsByFilterUseCase;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
 import br.com.nathanferreira.job_vacancy_management.modules.company.entities.JobEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +68,14 @@ public class CandidateController {
 
   @GetMapping("/job")
   @PreAuthorize("hasRole('CANDIDATE')")
+  @Tag(name = "Candidate", description = "Candidate infos")
+  @Operation(summary = "List of available job vacancies for candidate", description = "Endpoint responsible for listing all available job vacancies based on filter")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = {
+          @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+      })
+  })
+  @SecurityRequirement(name = "jwt_auth")
   public List<JobEntity> findJobByFilter(@RequestParam String filter) {
     var jobs = this.listAllJobsByFilterUseCase.execute(filter);
 
