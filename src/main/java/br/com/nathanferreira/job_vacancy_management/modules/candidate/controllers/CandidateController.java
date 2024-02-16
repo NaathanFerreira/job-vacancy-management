@@ -1,5 +1,6 @@
 package br.com.nathanferreira.job_vacancy_management.modules.candidate.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.CandidateEntity;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.CreateCandidateUseCase;
+import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ListAllJobsByFilterUseCase;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
+import br.com.nathanferreira.job_vacancy_management.modules.company.entities.JobEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,9 @@ public class CandidateController {
 
   @Autowired
   private ProfileCandidateUseCase profileCandidateUseCase;
+
+  @Autowired
+  private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
 
   @PostMapping("/")
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
@@ -50,6 +56,14 @@ public class CandidateController {
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
+
+  @GetMapping("/job")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  public List<JobEntity> findJobByFilter(@RequestParam String filter) {
+    var jobs = this.listAllJobsByFilterUseCase.execute(filter);
+
+    return jobs;
   }
 
 }
