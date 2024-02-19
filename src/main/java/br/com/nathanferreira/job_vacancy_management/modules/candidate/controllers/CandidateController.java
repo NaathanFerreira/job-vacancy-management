@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.CandidateEntity;
+import br.com.nathanferreira.job_vacancy_management.modules.candidate.dto.ProfileCandidateResponseDTO;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.CreateCandidateUseCase;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ListAllJobsByFilterUseCase;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.useCases.ProfileCandidateUseCase;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/candidate")
+@Tag(name = "Candidate", description = "Candidate infos")
 public class CandidateController {
 
   @Autowired
@@ -43,6 +45,13 @@ public class CandidateController {
   private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
 
   @PostMapping("/")
+  @Operation(summary = "Candidate registration", description = "Endpoint responsible for creating a new candidate")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", content = {
+        @Content(schema = @Schema(implementation = CandidateEntity.class))
+    }),
+    @ApiResponse(responseCode = "400", description = "User already exists")
+})
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
     try {
       var result = this.createCandidateUseCase.execute(candidateEntity);
@@ -54,6 +63,14 @@ public class CandidateController {
 
   @GetMapping("/")
   @PreAuthorize("hasRole('CANDIDATE')")
+  @Operation(summary = "Get candidate profile", description = "Endpoint responsible for return the candidade profile infos")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = {
+          @Content(schema = @Schema(implementation = ProfileCandidateResponseDTO.class))
+      }),
+      @ApiResponse(responseCode = "400", description = "User not found")
+  })
+  @SecurityRequirement(name = "jwt_auth")
   public ResponseEntity<Object> get(HttpServletRequest request) {
     var idCandidate = request.getAttribute("candidate_id");
 
@@ -68,7 +85,6 @@ public class CandidateController {
 
   @GetMapping("/job")
   @PreAuthorize("hasRole('CANDIDATE')")
-  @Tag(name = "Candidate", description = "Candidate infos")
   @Operation(summary = "List of available job vacancies for candidate", description = "Endpoint responsible for listing all available job vacancies based on filter")
   @ApiResponses({
       @ApiResponse(responseCode = "200", content = {
