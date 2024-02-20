@@ -5,8 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.nathanferreira.job_vacancy_management.exceptions.UserAlreadyExistsException;
-import br.com.nathanferreira.job_vacancy_management.modules.candidate.CandidateEntity;
-import br.com.nathanferreira.job_vacancy_management.modules.candidate.CandidateRepository;
+import br.com.nathanferreira.job_vacancy_management.modules.candidate.entities.CandidateEntity;
+import br.com.nathanferreira.job_vacancy_management.modules.candidate.repositories.CandidateRepository;
 
 @Service
 public class CreateCandidateUseCase {

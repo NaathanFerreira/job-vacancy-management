@@ -1,4 +1,4 @@
-package br.com.nathanferreira.job_vacancy_management.modules.candidate;
+package br.com.nathanferreira.job_vacancy_management.modules.candidate.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

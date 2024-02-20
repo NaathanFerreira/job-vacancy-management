@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.nathanferreira.job_vacancy_management.modules.candidate.CandidateRepository;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.dto.AuthCandidateDTO;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.dto.AuthCandidateResponseDTO;
+import br.com.nathanferreira.job_vacancy_management.modules.candidate.repositories.CandidateRepository;
 import br.com.nathanferreira.job_vacancy_management.providers.JWTCandidateProvider;
 
 @Service
