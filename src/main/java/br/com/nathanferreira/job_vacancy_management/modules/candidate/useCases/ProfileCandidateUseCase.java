@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import br.com.nathanferreira.job_vacancy_management.exceptions.UserNotFoundException;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.dto.ProfileCandidateResponseDTO;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.entities.CandidateEntity;
 import br.com.nathanferreira.job_vacancy_management.modules.candidate.repositories.CandidateRepository;
@@ -19,7 +20,7 @@ public class ProfileCandidateUseCase {
   public ProfileCandidateResponseDTO execute(UUID idCandidate) {
 
     var candidate = this.candidateRepository.findById(idCandidate).orElseThrow(() -> {
-      throw new UsernameNotFoundException("User not found");
+      throw new UserNotFoundException();
     });
 
     var profileCandidateResponseDTO = ProfileCandidateResponseDTO.builder()
